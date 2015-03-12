@@ -18,46 +18,43 @@
 
 #include <Servo.h>
 
-int analogInputPin[6];
+int sensorPin = 0;
+int servoPin = 9;
 
-int inputReading[6];
+int inputReading;
+int sensorThreshold = 100;
 
 Servo handServo;
 // Servo position in degrees.
-int position;
+int position = 0;
 
 void setup()
 {
-   handServo.attach(10);
+  // Init the servo output.
+  pinMode(servoPin, OUTPUT);
+  handServo.attach(servoPin);
 
-   position = 0;
-
-   for (int i=0;i<6;i++) {
-      analogInputPin[i] = i+1;
-      inputReading[i] = 0;
-      pinMode(analogInputPin[i], INPUT);
-   }
-
-   Serial.begin(9600);
+  // Init sensor input.
+  inputReading = 0;
+  pinMode(sensorPin, INPUT);
 }
 
 void loop()
 {
-  for (int i=0;i<6;i++) {
-    inputReading[i] = analogRead(analogInputPin[i]);
+  // Read the input value.
+  inputReading = analogRead(sensorPin);
+
+  if (inputReading >= sensorThreshold) {
+    if (position == 0)
+      position = 180;
+    else
+      position = 0;
+
+    handServo.write(position);
+
+    // Wait for the servo to move.
+    delay(1000);
   }
 
-  for (int i=0;i<1;i++) {
-    if (inputReading[i] >= 400) {
-       if (position == 0)
-            position = 180;
-       else
-            position = 0;
-
-       handServo.write(position);
-       delay(1000);
-    }
-  }
-
-  delay(100);
+  delay(50);
 }
