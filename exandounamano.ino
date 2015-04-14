@@ -22,7 +22,8 @@ int sensorPin = 0;
 int servoPin = 9;
 
 int inputReading;
-int sensorThreshold = 100;
+int sensorHighThreshold = 300;
+int sensorLowThreshold = 30;
 
 Servo handServo;
 // Servo position in degrees.
@@ -39,21 +40,31 @@ void setup()
   pinMode(sensorPin, INPUT);
 }
 
+void moveServo(int pos)
+{
+  handServo.write(pos);
+
+  // Wait for the servo to move.
+  delay(1100);
+}
+
 void loop()
 {
   // Read the input value.
   inputReading = analogRead(sensorPin);
 
-  if (inputReading >= sensorThreshold) {
-    if (position == 0)
+  if (inputReading >= sensorHighThreshold) {
+    if (position != 180) {
       position = 180;
-    else
-      position = 0;
-
-    handServo.write(position);
-
-    // Wait for the servo to move.
-    delay(1000);
+      moveServo(position);
+    }
+  } else {
+    if (inputReading < sensorLowThreshold) {
+      if (position != 0) {
+        position = 0;
+        moveServo(position);
+      }
+    }
   }
 
   delay(50);
