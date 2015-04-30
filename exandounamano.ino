@@ -22,8 +22,8 @@ int sensorPin = 0;
 int servoPin = 9;
 
 int inputReading;
-int sensorHighThreshold = 300;
-int sensorLowThreshold = 30;
+int sensorHighThreshold = 30;
+int sensorLowThreshold = 5;
 
 Servo handServo;
 // Servo position in degrees.
@@ -45,7 +45,7 @@ void moveServo(int pos)
   handServo.write(pos);
 
   // Wait for the servo to move.
-  delay(1100);
+  delay(300);
 }
 
 void loop()
